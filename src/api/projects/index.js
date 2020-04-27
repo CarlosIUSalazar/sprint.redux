@@ -1,16 +1,38 @@
 const router = require("express").Router();
 const builds = require("./builds");
+const shortid = require("shortid");
+
 
 router.get("/", (req, res) => {
   // TODO retrieve and send all projects
   res.status(418).json({ message: "Not Implemented" });
 });
 
-router.post("/", (req, res) => {
+router.post("/api/projects", (req, res) => {
   const { project } = req.body;
   // TODO Add new project, give it an id and send it back.
-  res.status(418).json({ message: "Not Implemented" });
+  // const returnObject = {
+  //   id: shortid.generate(), // We use a string generated with shortid, but you are free to use another datatype
+  //   name: "vscode",
+  //   url: "git@github.com:Microsoft/vscode.git",
+  //   buildCommand: "yarn && yarn test",
+  //   language: "JavaScript",
+  // }
+
+  res.send(project);
+  console.log("RETURN OBJJJ", project);
+  //res.status(418).json({ message: "Not Implemented" });
+  // res.status(201).end();
 });
+
+
+// app.post("/api/types", (request, response) => {
+//   const newType = "Saiyan";
+//   pokeData.types.push(newType);
+//   response.send(pokeData.types);
+//   // console.log(pokeData.pokemon.length)
+//   //response.status(201).end();
+// });
 
 router.get("/:projectId", (req, res) => {
   const { projectId } = req.params;
