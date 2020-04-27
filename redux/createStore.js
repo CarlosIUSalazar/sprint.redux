@@ -5,6 +5,16 @@ const initialStateProject = {
   builds: [],
 };
 
+
+//M
+const initialState = { projects: [] };
+function addingID(state) {
+  for (const i of state.projects) state.projects[i].id = shortid.generate();
+  console.log("STATEEEEEEEEEEE", state);
+  return state;
+} 
+
+
 // create our store
 const store = createStore(reducer);
 
@@ -18,3 +28,4 @@ const store = createStore(reducer);
 //   pizza.innerText = store.getState().slices;
 //   toppings.innerText = store.getState().toppings;
 // }
+

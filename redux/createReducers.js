@@ -10,6 +10,14 @@ function reducer(state = initialState, action) {
       return state;
   }
 }
+//m
+const initialState = { projects: [] };
+function addingID(state) {
+  for (const i of state.projects) state.projects[i].id = shortid.generate();
+  console.log("STAAAAATEEEEEE", state);
+  return state;
+}
+
 
 //ACTION
 function addProject(project) {
@@ -19,4 +27,7 @@ function addProject(project) {
   };
 }
 
-
+//2.0
+function add_project(content) {
+  return { type: "ADD_PROJECT", payload: addingID(content) };
+}
