@@ -21,7 +21,7 @@ router.post("/api/projects", (req, res) => {
   store.dispatch(add_project(project)); //?? M aybe
 
   res.send(project);
-  console.log("RETURN OBJJJ", project);
+  console.log("RPROOOOOJECT", project);
   //res.status(418).json({ message: "Not Implemented" });
   // res.status(201).end();
 });
@@ -39,9 +39,10 @@ router.get("/:projectId", (req, res) => {
   const { projectId } = req.params;
   // TODO retrieve and send project with given id
     console.log("PROOOOJJEEECT :>> ", req.body);
+    
     store.dispatch({ type: "GET_PROJECT", id: projectId })  //Maybe?
+    
     const data = store.getState();
-
 
   res.status(418).json({ message: "Not Implemented" });
 });
