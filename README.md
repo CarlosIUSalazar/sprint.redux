@@ -1,76 +1,75 @@
 # Redux
-### This was created during my time as a [Code Chrysalis](https://codechrysalis.io) Student
 
-Redux について学ぶ時がきました。Redux は、アプリケーションの状態（state）を管理するのに役立つライブラリです。
-実際には、React とともに Redux が使用され語られることが多いですが、今日は Node サーバーのみのアプリケーションの状態（state）を管理するために Redux を使用します。
+It is time to learn about Redux. Redux is a library that helps you manage the state of your application.
+In the wild, you will often see Redux used and mentioned alongside React, but today we will be using Redux to manage the state of a node server only application.
 
-## はじめに
+## Preface
 
-このリポジトリは巨大で、より複雑な RESTful API のベストプラクティスに基づいて作られています。複雑な処理を構築するためにファイルを分割し、それぞれができるだけ小さくなるように設計し、それぞれを組み合わせています。あなたの作業を少し楽にするために、コードベース全体に渡って、ヒントとなるコメントを書いておきました。このコードベースに redux を導入する際には、ホワイトボードを使って、1 つのリクエストの設計をいったんグラフ化してみることをお勧めします。
+This repository is big and follows best practices for a more complex RESTful API. The files are split up, aiming to be as small as possible, combining to create complex behavior. Comments are strewn throughout the codebase to make your life a little bit easier. I suggest taking a whiteboard and graphing out the structure of one request once you have added some redux in here. 
 
-この演習も、とても自由度の高いものになっています。テストと設計はガイドラインとして機能しています。機能が予想通りに動作する限り、変更/削除しても構いません。
+This exercise is also very open-ended. Tests and structure act as guidelines and can be modified/deleted, as long as the functionality works.
 
 ## Butterfly CI
 
-革新的な新しい CI サービスの作成に参加しましょう。タスクをすばやく設定して実行するために、それぞれのタスクがあなたとあなたのペアに割り振られました：
+You will be part of creating a revolutionary new CI service. To quickly get up and running the tasks were split among you and your colleagues:
 
-- API の設計と設定 - 同僚 A はこれを引き受けました。
-- 大変なバックエンド作業をすべて行う - シニア開発者はこの種の作業が大好きなので、彼はそれを引き受けました。
-- アプリケーションの状態（state）を追跡し、変更する - このタスクがあなたに振られました。
+* Designing and setting up an API - Colleague A took this upon him
+* Doing all the hard backend work - The Senior dev loves this kind of thing, so he took it
+* Keeping track and changing application state - This task fell on you
 
-## REST リクエストを行う
+## Making REST Requests
 
-[Insomnia](https://insomnia.rest/) は、API に REST クエリを送信できるクロスプラットフォーム対応の強力なアプリであり、これを使用して API をテストすることもできます。または、[POSTMan](https://www.getpostman.com/) を使用することもできます。
+[Insomnia](https://insomnia.rest/) is a cross-platform, powerful app that allows you to send REST queries to your API, and you can use it to test your API. Alternatively, you can also use [POSTMan](https://www.getpostman.com/).
 
-## スクリプト + ヘルプ
+## Scripts + Helps
 
-Production モードでサーバーを起動するには、以下のコマンドを実行します：
+To start your server in production mode:
 
 ```
 yarn start
 ```
 
-ホットリローディングのできる Development モードを起動するには、以下のコマンドを実行します：
+To start your server in development mode with hot reloading:
 
 ```
 yarn dev
 ```
 
-lint チェックを行うには、以下のコマンドを実行します：
+To execute linting:
 
 ```
 yarn lint
 ```
 
-reducers/actions に対して mocha のテストを行うには、以下のコマンドを実行します：
+To run the mocha tests for your reducers/actions:
 
 ```
 yarn test:mocha
 ```
 
-サーバーのシミュレーションを使用し実行するには、以下のコマンドを実行します（基本的に結合テスト用）：
+To run a simulated use of your server (basically an integration test):
 
 ```
 yarn test:simulate
 ```
 
-シミュレーション、mocha のテストと lint チェックをそれぞれ実行するには、以下のコマンドを実行します：
+To simulate, run mocha tests and lint:
 
 ```
 yarn test
 ```
 
-デバッグをサポートするために、すぐに使用できるデバッグ設定を見つけられると思います。サーバーとシミュレーションを同時に起動およびデバッグします。
+To help you debug, you will find a debug configuration that is ready to go. It will simultaneously start and debug the server and simulation.
 
-## プロジェクトとビルド
+## Projects and Builds
 
-最初のバージョンには、2 つの主要コンポーネント（プロジェクトとビルド）があります。
+There are two main components for the first version: Projects and Builds
 
-プロジェクトには、ソースコードを取得する場所とソフトウェアプロジェクトのテストを実行する方法に関する情報、および追加のメタ情報が含まれています。JSON で表した場合のプロジェクト例は以下のとおりです：
+Projects contain information about where to get the code and how to execute the tests of a software project as well as some additional meta information. Here is what an example Project could look like when represented with JSON:
 
 ```js
 {
-  "id": "hykjdLm", // shortid で生成された文字列を使用しますが、別のデータ型を自由に使用することもできます
+  "id": "hykjdLm", // We use a string generated with shortid, but you are free to use another datatype
   "name": "vscode",
   "url": "git@github.com:Microsoft/vscode.git",
   "buildCommand": "yarn && yarn test",
@@ -78,57 +77,57 @@ yarn test
 }
 ```
 
-また、サービスはプロジェクトのビルドを追跡します。ビルドは次の形式を取ります：
+Also, the service keeps track of the builds of projects. Builds take the following shape:
 
 ```js
 {
-  "buildNumber": 65481, // プロジェクト内のビルドごとにインクリメントされる連番
-  "status": "Failed", // "Pending" | "Running" | "Success" | "Failed" のうちの 1 つ。
+  "buildNumber": 65481, // A continuous number incrementing for each build in a project
+  "status": "Failed", // One of "Pending" | "Running" | "Success" | "Failed"
   "output": "48 out of 13325 Tests failed."
 }
 ```
 
-## 基本レベル
+## Basic Requirements
 
-状態（state）とファイルの構成は自分で自由に決めても構いません。
-あなたに課す唯一の制限は、状態（state）を管理するために `redux` を使用しなければならないということです。
-ストア（Store）をセットアップし、Actions と Reducers を定義して使用します。
+You are free to decide the shape of your state and the structure of your files on your own.
+The only limitation we impose on you is that you have to use `redux` to manage your state, so you will have to
+setup a store and define and use actions and reducers.
 
-_注意：_ このリポジトリのテストは、特定の Redux の構成をテストするように設計されています。今回、Redux の形式や構成を自由に決定できるため、今回用意されているテストは必要要件ではなく、ガイドラインとして機能すると考えてください。
+*Note:* The tests in this repository are designed to test a specific Redux structure. Since you are free to decide the shape and structure, the tests this time around serve as guidelines rather than requirements. 
 
-役に立つ追加のパッケージを自由にインストールして使用しても構いません。一部はすでにインストールされています。`shortid` は、プロジェクトの ID として使用できる短い一意の文字列を生成します。数字を使用することもできます。あなたの自由です。また、dependencies に `underscore` がリストアップされています。その機能の多くは `LoScore` の演習で再現・実装したことがあるはずなので、そのインターフェースには馴染みがあるはずです！
+You are free to install and use any additional packages to help you. Some are already installed for you. `shortid` generates short unique strings that can be used as id's for projects; you could also use numbers, up to you. You will also find `underscore` listed in the dependencies. You recreated many of its functions back in `LoScore,` so the interface should be familiar!
 
-コード全体にわたって、役立つコメントが記述されており、コメント箇所はグローバルな状態（state）にアクセスするか変更する必要がある箇所になります。
+Your colleagues have left helpful comments all over the code, where they think you will have to either access or modify the global state.
 
-`TODO` を検索すると、すべてのコメント箇所が見つかるはずです。各コメントには、そこにあるデータで何を行えばよいのか短い説明が記述されています。
+Search for `TODO,` and you should find all the places. Each comment comes with a short description of what you need to do with the data there.
 
-- [ ] redux を追加しましょう -- redux を配置する場所を選択してください。現在はどこにも配置されていないので、好きな構成を自由に作成できます。すべての関連ファイルを配置する redux フォルダーを作成することをお勧めしますが、redux を含む単一のファイルだけを作成しても構いません。どのタイミングでストア（store）を初期化するかは、あまり気にする必要はありません（ただし、ストア（store）を初期化するために、メインの index.js または butterfly.js 内で redux のファイルをインポートしないでください）。それらとは異なる場所でストア（store）を初期化し、必要な場所から使用します。
-- [ ] 自身の状態（state）を表す適切な構成をデザインしましょう - 他のタスクをこなすときに、より簡単な実装方法を見つけた場合、何回も問題にアプローチしたり改善したりすること恐れないでください。
-- [ ] ストア（store）、Actions、Reducers をセットアップしましょう。
-- [ ] すべての `TODO` コメントを確認し、適切な処理を実装しましょう。
-- [ ] `TODO` のうち API に関しては、正しい結果もレスポンスとして返す必要があります。現在の実装では、常に 418 エラーを返しています。
-- [ ] シミュレーションに合格しましょう！ シミュレーションを起動するために、`yarn test：simulate` を実行しましょう。
-- [ ] Actions と Reducers のテストを作成しましょう。それらのテストを `src/__tests__` フォルダに入れてください。
+* [ ] Add redux -- Choose a place to put your redux, there currently is none, so you are free to create any structure you like. A suggestion would be to have a redux folder, where you will be placing everything, but it is also okay to have just a file containing redux. One thing to be wary about is that you won't have to worry much about when your store is initialized (do not import your file into the main index.js or butterfly.js to initialize the store). Initialize it in your carved out location and use it from where you need to.
+* [ ] Design an appropriate structure to represent your state - do not be afraid to iterate on your approach as you work on other tasks as you will find some designs easier to implement than others.
+* [ ] Setup a store, actions and reducers
+* [ ] Look at all `TODO` comments and implement the proper operations.
+* [ ] For API `TODO,` you will also have to send the correct result. The current implementation always returns error 418.
+* [ ] Pass the simulation! Run `yarn test:simulate` to execute it.
+* [ ] Write tests for your actions & reducers. Please put them into the `src/__tests__` folder.
 
-## 中級レベル
+## Medium Requirements
 
-あなたの作成した CI が動き始めます！！トラフィックの渋滞に見舞われます！残念ながら、サーバーはトラフィックをうまく処理できず、頻繁にクラッシュします。
-これは、これまでのすべてのデータがなくなったことを意味します！なんてことでしょう！
+Your CI is taking off!! You are getting hammered with traffic! Unfortunately, your server cannot handle it very well and frequently crashes.
+This means that all data from before is gone! Oh no!
 
-- [ ] 状態（state）を保持し、サーバーの起動時に状態（state）をロードできるようにしましょう（これをどのように行うかは、あなた次第です）。
+* [ ] Persist your state and be able to load it up on server start (How you do this is up to you.)
 
-## 応用レベル
+## Advanced Requirements
 
-おめでとうございます！ あなたの MVP は成功し、企業もこの CI を採用したいと考えています。
-企業のニーズを満たすために、API と状態（state）を拡張する必要があります：
+Congratulations! Your MVP was a success, and companies want to pick up this CI too.
+You will have to expand the API and your state to represent the companies needs:
 
-- [ ] `users` と `organizations` を追加しましょう。ユーザーはエンドポイントを介して登録でき、また、組織の一部として登録することができます。組織はプロジェクトを抱え、組織に属するユーザーのみがプロジェクトを表示できます。すてきなユーザー認証は必要ありません。リクエストに現在のユーザーを含めても構いません。
-      必要な新しいルートとエンドポイント、および状態（state）を変更する必要があるかどうかを考えてみましょう。
+* [ ] Add `users` and `organizations`. Users can register via an Endpoint and can be part of an organization. Organizations can own projects, and only users belonging to an organization can see their projects. No need for fancy authentication, it's okay to include the current user in the request.
+      Think about new routes and endpoints that you need and if you have to change your state.
 
-## ナイトメアモード
+## Nightmare Mode
 
-なんてことでしょう、シニア開発者が休暇から帰りたくないと言い出しました！
+Oh no, the Senior Dev decided he never wants to come back from his vacation!
 
-- [ ] 実際のビルドロジックを実装しましょう。
-  - [ ] git プロジェクトをチェックアウトする。
-  - [ ] ビルドコマンドを実行する。
+* [ ] Implement actual build logic.
+  * [ ] Checking out a git project
+  * [ ] Running build commands
